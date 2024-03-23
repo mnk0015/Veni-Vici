@@ -20,9 +20,7 @@ const CatViewer = () => {
   };
 
   const handleBanAttribute = (attribute) => {
-    if (!bannedAttributes.includes(attribute)) {
-      setBannedAttributes([...bannedAttributes, attribute]);
-    }
+    setBannedAttributes([...bannedAttributes, attribute]);
   };
 
   const handleUnbanAttribute = (attribute) => {
@@ -35,10 +33,6 @@ const CatViewer = () => {
 
   if (!catData) return <div>Loading...</div>;
 
-  // Filter out banned attributes
-  const filteredAttributes = Object.entries(catData)
-    .filter(([key, value]) => !bannedAttributes.includes(value));
-
   return (
     <div className="CatViewer">
       <img src={catData.url} alt="Cat" />
@@ -46,12 +40,12 @@ const CatViewer = () => {
       <div>
         <h3>Attributes:</h3>
         <ul>
-          {filteredAttributes.map(([key, value]) => (
-            <li key={key}>
-              {key}: {value}
-              <button onClick={() => handleBanAttribute(value)}>Ban</button>
-            </li>
-          ))}
+          <li>Breed: {catData.breeds[0]?.name}</li>
+          <button onClick={() => handleBanAttribute('breed')}>Ban Breed</button>
+          <li>Life Span: {catData.breeds[0]?.life_span}</li>
+          <button onClick={() => handleBanAttribute('life_span')}>Ban Life Span</button>
+          <li>Origin: {catData.breeds[0]?.origin}</li>
+          <button onClick={() => handleBanAttribute('origin')}>Ban Origin</button>
         </ul>
       </div>
       <div>
