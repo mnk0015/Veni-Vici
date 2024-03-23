@@ -4,7 +4,9 @@ import axios from 'axios';
 
 const CatViewer = () => {
   const [catData, setCatData] = useState(null);
-  const [bannedAttributes, setBannedAttributes] = useState([]);
+  const [bannedLocations, setBannedLocations] = useState([]);
+  const [bannedBreeds, setBannedBreeds] = useState([]);
+  const [bannedWeights, setBannedWeights] = useState([]);
 
   const fetchCatData = async () => {
     try {
@@ -19,8 +21,16 @@ const CatViewer = () => {
     }
   };
 
-  const handleBanAttribute = (attribute) => {
-    setBannedAttributes([...bannedAttributes, attribute]);
+  const handleBanLocation = (location) => {
+    setBannedLocations([...bannedLocations, location]);
+  };
+
+  const handleBanBreed = (breed) => {
+    setBannedBreeds([...bannedBreeds, breed]);
+  };
+
+  const handleBanWeight = (weight) => {
+    setBannedWeights([...bannedWeights, weight]);
   };
 
   useEffect(() => {
@@ -29,27 +39,42 @@ const CatViewer = () => {
 
   if (!catData) return <div>Loading...</div>;
 
+  // Filter out banned attributes
+  const isAllowedCat = () => {
+    return (
+      !bannedLocations.includes(catData.origin) &&
+      !bannedBreeds.includes(catData.breeds) &&
+      !bannedWeights.includes(catData.weight)
+    );
+  };
+
+  const getNextCat = () => {
+    fetchCatData();
+  };
+
   return (
-    <div>
-      <img src={catData.url} alt="Cat" />
-      <button onClick={fetchCatData}>Next Cat</button>
+    <div className="CatViewer">
+      {isAllowedCat() ? (
+        <img src={catData.url} alt="Cat" />
+      ) : (
+        <div>No more cats matching your preferences.</div>
+      )}
+      <button onClick={getNextCat}>Next Cat</button>
       <div>
         <h3>Attributes:</h3>
         <ul>
-          {Object.entries(catData).map(([key, value]) => (
-            <li key={key}>
-              {key}: {value}
-              <button onClick={() => handleBanAttribute(key)}>Ban</button>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div>
-        <h3>Banned Attributes:</h3>
-        <ul>
-          {bannedAttributes.map((attribute, index) => (
-            <li key={index}>{attribute}</li>
-          ))}
+          <li>
+            Location: {catData.origin}
+            <button onClick={() => handleBanLocation(catData.origin)}>Ban</button>
+          </li>
+          <li>
+            Breed: {catData.breeds}
+            <button onClick={() => handleBanBreed(catData.breeds)}>Ban</button>
+          </li>
+          <li>
+            Weight: {catData.weight}
+            <button onClick={() => handleBanWeight(catData.weight)}>Ban</button>
+          </li>
         </ul>
       </div>
     </div>

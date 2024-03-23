@@ -1,30 +1,24 @@
 /* App.css */
 
-.App {
-  text-align: center;
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+/* Add a container around the CatViewer to control its width */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
 .CatViewer {
   margin-bottom: 20px;
 }
 
+/* Set a max-width for the cat image */
 .CatViewer img {
   max-width: 100%;
   border-radius: 10px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Make the button responsive */
 .CatViewer button {
   margin-top: 10px;
   padding: 8px 16px;
@@ -34,6 +28,7 @@
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s;
+  width: 100%; /* Make the button width 100% of its container */
 }
 
 .CatViewer button:hover {
