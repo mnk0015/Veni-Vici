@@ -4,9 +4,7 @@ import axios from 'axios';
 
 const CatViewer = () => {
   const [catData, setCatData] = useState(null);
-  const [bannedLocations, setBannedLocations] = useState([]);
-  const [bannedBreeds, setBannedBreeds] = useState([]);
-  const [bannedWeights, setBannedWeights] = useState([]);
+  const [bannedAttributes, setBannedAttributes] = useState([]);
 
   const fetchCatData = async () => {
     try {
@@ -21,16 +19,14 @@ const CatViewer = () => {
     }
   };
 
-  const handleBanLocation = (location) => {
-    setBannedLocations([...bannedLocations, location]);
+  const handleBanAttribute = (attribute) => {
+    if (!bannedAttributes.includes(attribute)) {
+      setBannedAttributes([...bannedAttributes, attribute]);
+    }
   };
 
-  const handleBanBreed = (breed) => {
-    setBannedBreeds([...bannedBreeds, breed]);
-  };
-
-  const handleBanWeight = (weight) => {
-    setBannedWeights([...bannedWeights, weight]);
+  const handleUnbanAttribute = (attribute) => {
+    setBannedAttributes(bannedAttributes.filter((attr) => attr !== attribute));
   };
 
   useEffect(() => {
@@ -40,41 +36,33 @@ const CatViewer = () => {
   if (!catData) return <div>Loading...</div>;
 
   // Filter out banned attributes
-  const isAllowedCat = () => {
-    return (
-      !bannedLocations.includes(catData.origin) &&
-      !bannedBreeds.includes(catData.breeds) &&
-      !bannedWeights.includes(catData.weight)
-    );
-  };
-
-  const getNextCat = () => {
-    fetchCatData();
-  };
+  const filteredAttributes = Object.entries(catData)
+    .filter(([key, value]) => !bannedAttributes.includes(value));
 
   return (
     <div className="CatViewer">
-      {isAllowedCat() ? (
-        <img src={catData.url} alt="Cat" />
-      ) : (
-        <div>No more cats matching your preferences.</div>
-      )}
-      <button onClick={getNextCat}>Next Cat</button>
+      <img src={catData.url} alt="Cat" />
+      <button onClick={fetchCatData}>Next Cat</button>
       <div>
         <h3>Attributes:</h3>
         <ul>
-          <li>
-            Location: {catData.origin}
-            <button onClick={() => handleBanLocation(catData.origin)}>Ban</button>
-          </li>
-          <li>
-            Breed: {catData.breeds}
-            <button onClick={() => handleBanBreed(catData.breeds)}>Ban</button>
-          </li>
-          <li>
-            Weight: {catData.weight}
-            <button onClick={() => handleBanWeight(catData.weight)}>Ban</button>
-          </li>
+          {filteredAttributes.map(([key, value]) => (
+            <li key={key}>
+              {key}: {value}
+              <button onClick={() => handleBanAttribute(value)}>Ban</button>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <h3>Banned Attributes:</h3>
+        <ul>
+          {bannedAttributes.map((attribute, index) => (
+            <li key={index}>
+              {attribute}
+              <button onClick={() => handleUnbanAttribute(attribute)}>Unban</button>
+            </li>
+          ))}
         </ul>
       </div>
     </div>
